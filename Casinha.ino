@@ -62,6 +62,63 @@ void ShowRoomLeds()
   Serial.println();
 }
 
+void ShowLoop(int n)
+{
+
+  // n giros
+  for (int h = 0; h < n; h++) {
+
+    uint32_t cor;
+    if ( h % 3 == 0 )
+      cor = strip.Color(255, 0, 0);
+    else if ( h % 3 == 1 )
+      cor = strip.Color(0, 255, 0);
+    else // if ( h % 3 == 2 )
+      cor = strip.Color(0, 0, 255);
+
+    // gira
+    for (int i = 0; i < NUMLEDS; i++) {
+      for (int j = 0; j < NUMLEDS; j++) {
+
+        if (i == j)
+        {
+          strip.setPixelColor(j, cor);
+          Serial.print("O");
+        }
+        else
+        {
+          strip.setPixelColor(j, 0);
+          Serial.print("_");
+        }
+      }
+
+      Serial.println();
+      strip.show();
+      delay(30);
+    }
+  }
+
+  Serial.println();
+}
+
+void ShowFader(int n)
+{
+  // n vezes
+  for (int h = 0; h < n; h++) {
+    // efeito
+    for (int i = 0; i < 256; i += 16) {
+      uint32_t cor = strip.Color(i, i, i);
+      // define as cores iguais oara tdos os leds
+      for (int j = 0; j < NUMLEDS; j++) {
+        strip.setPixelColor(j, cor);
+      }
+      strip.show();
+      delay(30);
+    }
+  }
+}
+
+
 void ReceiveIR()
 {
   Serial.print(" => ");
@@ -119,13 +176,15 @@ void ReceiveIR()
       break;
 
     case XindaAsteristico:
-      Serial.print("* Brilho Maximo");
-      strip.setBrightness(255); // Brilho máximo (padrão)
+      Serial.println("* ShowFader");
+      ShowFader(5);
+      //strip.setBrightness(255); // Brilho máximo (padrão)
       break;
 
     case XindaSustenido:
-      Serial.print("# Apagar");
-      strip.setBrightness(100); // Reduz o Brilho
+      Serial.println("# ShowLoop");
+      ShowLoop(15);
+      //strip.setBrightness(100); // Reduz o Brilho
       break;
 
     case XindaOK:
